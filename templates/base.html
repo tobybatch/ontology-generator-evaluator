@@ -1,7 +1,7 @@
 {% extends "govuk_frontend_jinja/template.html" %}
 
 {% block pageTitle %}
-  {{ page_title | default("Apply for a certificate") }} - GOV.UK
+  {{ page_title | default("Test Ontology Library") }} - GOV.UK
 {% endblock %}
 
 {% block head %}
@@ -11,7 +11,7 @@
 {% block header %}
   {%- from 'govuk_frontend_jinja/components/header/macro.html' import govukHeader -%}
   {{ govukHeader(params={
-      "serviceName": "Apply for a certificate",
+      "serviceName": "Test Ontology Library",
       "serviceUrl": url_for('index')
   }) }}
 {% endblock %}

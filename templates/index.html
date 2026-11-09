@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
 {%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+{%- from 'govuk_frontend_jinja/components/textarea/macro.html' import govukTextarea -%}
+{%- from 'govuk_frontend_jinja/components/file-upload/macro.html' import govukFileUpload -%}
+{%- from 'govuk_frontend_jinja/components/select/macro.html' import govukSelect -%}
 {%- from 'govuk_frontend_jinja/components/warning-text/macro.html' import govukWarningText -%}
 {%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
 
@@ -13,25 +17,118 @@
       Use this service to test Ontology generation using a variety of AI models and processing libraries.
     </p>
 
-    <p class="govuk-body">
-      <h2>Run name</h2>
-    </p>
+    <form method="POST" enctype="multipart/form-data" novalidate>
 
-    <p class="govuk-body">
-      <h2>Processing library</h2>
-    </p>
+      <p class="govuk-body">
+        {{ govukInput(params={
+            "label": {
+              "text": "Run name",
+              "isPageHeading": false,
+              "classes": "govuk-label--m"
+            },
+            "id": "run_name",
+            "name": "run_name",
+            "value": run_name,
+            "autocomplete": "run_name",
+            "spellcheck": false,
+            "errorMessage": {
+              "text": errors["run_name"]
+            } if "run_name" in errors else None
+          }) }}
 
-    <p class="govuk-body">
-      <h2>AI Model</h2>
-    </p>
+        {{ govukSelect(params={
+          "id": "processing_library",
+          "name": "processing_library",
+          "label": {
+            "text": "Processing library",
+            "classes": "govuk-label--m"
+          },
+          "items": [
+            {
+              "value": "lib1",
+              "text": "lib1"
+            },
+          ],
+          "errorMessage": {
+            "text": errors["processing_library"]
+          } if "processing_library" in errors else None
+        }) }}
 
-    <p class="govuk-body">
-      <h2>Input data</h2>
-    </p>
+        {{ govukInput(params={
+          "id": "ai_url",
+          "name": "ai_url",
+          "label": {
+            "text": "AI URL",
+            "classes": "govuk-label--m"
+          },
+          "value": "http://localhost:11434",
+          "autocomplete": "ai_url",
+          "spellcheck": false,
+          "errorMessage": {
+            "text": errors["ai_url"]
+          } if "ai_url" in  errors else None
+        }) }}
 
-    <p class="govuk-body">
-      <h2>Processing prompt</h2>
-    </p>
+        {{ govukSelect(params={
+          "id": "ai_model",
+          "name": "ai_model",
+          "label": {
+            "text": "AI Model",
+            "classes": "govuk-label--m"
+          },
+          "items": [
+            {
+              "value": "model 1",
+              "text": "model 1"
+            },
+          ],
+          "errorMessage": {
+            "text": errors["ai_model"]
+          } if "ai_model" in  errors else None
+        }) }}
+
+        {{ govukInsetText(params={
+          "text": "During the dev stage, this is a single file. TODO: add multiple document uploads"
+        }) }}
+
+        {{ govukFileUpload(params={
+            "id": "input_data",
+            "name": "input_data",
+            "label": {
+              "text": "Upload a source document",
+              "isPageHeading": true,
+              "classes": "govuk-label--m"
+            },
+            "hint": {
+              "text": "The file must be a PDF, MD, or DOCX."
+            },
+            "errorMessage": {
+              "text": errors["input_data"]
+            } if "input_data" in errors else None,
+            "attributes": {
+              "accept": ".pdf,.md,.docx"
+            }
+            }) }}
+
+        {{ govukTextarea(params={
+            "name": "processing_prompt",
+            "id": "processing_prompt",
+            "rows": 5,
+            "value": "detail_text",
+            "label": {
+              "text": "Processing prompt",
+              "classes": "govuk-label--m"
+            },
+            "errorMessage": {
+              "text": errors["processing_prompt"]
+            } if "processing_prompt" in errors else None
+          }) }}
+
+            {{ govukButton(params={
+            "text": "Go"
+            }) }}
+      </p>
+    </form>
 
 {##}
 {#    {{ govukWarningText(params={#}
@@ -61,14 +158,11 @@
 
   <div class="govuk-grid-column-one-third">
     <aside class="govuk-prototype-kit-common-templates-related-items" role="complementary">
-      <h2 class="govuk-heading-m" id="subsection-title">Related content</h2>
+      <h2 class="govuk-heading-m" id="subsection-title">Previous runs</h2>
       <nav role="navigation" aria-labelledby="subsection-title">
         <ul class="govuk-list govuk-!-font-size-16">
           <li>
-            <a class="govuk-link" href="#">Github repo</a>
-          </li>
-          <li>
-            <a class="govuk-link" href="#">Ollama</a>
+            <a class="govuk-link" href="#">Run one</a>
           </li>
         </ul>
       </nav>

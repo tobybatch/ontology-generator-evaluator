@@ -1,7 +1,7 @@
 from flask import Flask, render_template
-from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader, FileSystemLoader
+from jinja2 import ChoiceLoader, FileSystemLoader, PackageLoader, PrefixLoader
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader("templates"),
