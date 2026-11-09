@@ -1,7 +1,7 @@
 [project]
-name = "ontology-genrator-evaluator"
+name = "ontology-generator-evaluator"
 version = "0.1.0"
-description = "Add your description here"
+description = "Web application for generating, evaluating and comparing ontology extraction results from AI-ingested documents"
 readme = "README.md"
 authors = [
     { name = "Toby Batch", email = "tobias@neontribe.co.uk" }
@@ -15,9 +15,52 @@ dependencies = [
     "jinja2>=3.1.6",
 ]
 
+[dependency-groups]
+dev = [
+    "commitizen>=4.13.9",
+    "pre-commit>=4.6.2",
+    "ruff>=0.16.10",
+]
+
 [project.scripts]
-ontology-genrator-evaluator = "ontology_genrator_evaluator:main"
+ontology-generator-evaluator = "ontology_generator_evaluator:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # Pyflakes
+    "I",  # isort (import sorting)
+    "B",  # flake8-bugbear
+]
+ignore = []
+exclude = [
+    "tests/**/*.py",       # Ignore all files in the tests directory. TODO: consider removing this once tests are fixed.
+    "migrations/**/*.py",  # Ignore all files in the migrations directory. TODO: consider removing this once migrations are fixed.
+]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.commitizen]
+name = "cz_customize"
+tag_format = "v$version"
+version_scheme = "semver"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true
+template = ".changelog.j2"
+
+[tool.commitizen.customize]
+commit_parser = "^(?P<change_type>feat|fix|refactor|docs|tests|chore|build)(\\((?P<scope>[^\\)]+)\\))?:\\s(?P<message>.*)$"
+changelog_pattern = "^(feat|fix|refactor|docs|tests|chore|build)"
+change_type_map = { "feat" = "Features", "fix" = "Bug Fixes", "refactor" = "Refactoring", "docs" = "Documentation", "tests" = "Tests", "chore" = "Chores", "build" = "Builds" }
+change_type_order = ["BREAKING CHANGE", "Features", "Bug Fixes", "Documentation", "Refactoring", "Tests", "Chores", "Builds"]

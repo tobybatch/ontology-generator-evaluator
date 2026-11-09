@@ -12,8 +12,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings" />
+  <component name="PyDocumentationSettings" />
   <component name="ReSTService" />
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
   </component>
+  <component name="TestRunnerService" />
 </module>
