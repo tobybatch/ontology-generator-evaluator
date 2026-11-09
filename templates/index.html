@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+{%- from 'govuk_frontend_jinja/components/warning-text/macro.html' import govukWarningText -%}
+{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Test Ontology Library</h1>
+
+    <p class="govuk-body-l">
+      Use this service to test Ontology generation using a variety of AI models and processing libraries.
+    </p>
+
+    <p class="govuk-body">
+      <h2>Run name</h2>
+    </p>
+
+    <p class="govuk-body">
+      <h2>Processing library</h2>
+    </p>
+
+    <p class="govuk-body">
+      <h2>AI Model</h2>
+    </p>
+
+    <p class="govuk-body">
+      <h2>Input data</h2>
+    </p>
+
+    <p class="govuk-body">
+      <h2>Processing prompt</h2>
+    </p>
+
+{##}
+{#    {{ govukWarningText(params={#}
+{#      "text": "Warning ttext.",#}
+{#      "iconFallbackText": "Warning"#}
+{#    }) }}#}
+{##}
+{#    {{ govukButton(params={#}
+{#      "text": "Start now",#}
+{#      "href": "#",#}
+{#      "isStartButton": true#}
+{#    }) }}#}
+{##}
+{#    <h2 class="govuk-heading-m">Big green button</h2>#}
+{##}
+{#    <p class="govuk-body">Bullet list:</p>#}
+{#    <ul class="govuk-list govuk-list--bullet">#}
+{#      <li>item one</li>#}
+{#      <li>item two</li>#}
+{#      <li>item three</li>#}
+{#    </ul>#}
+{##}
+{#    {{ govukInsetText(params={#}
+{#      "text": "Inset text with grey bar."#}
+{#    }) }}#}
+  </div>
+
+  <div class="govuk-grid-column-one-third">
+    <aside class="govuk-prototype-kit-common-templates-related-items" role="complementary">
+      <h2 class="govuk-heading-m" id="subsection-title">Related content</h2>
+      <nav role="navigation" aria-labelledby="subsection-title">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li>
+            <a class="govuk-link" href="#">Github repo</a>
+          </li>
+          <li>
+            <a class="govuk-link" href="#">Ollama</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+</div>
+{% endblock %}

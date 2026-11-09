@@ -1,0 +1,30 @@
+{% extends "govuk_frontend_jinja/template.html" %}
+
+{% block pageTitle %}
+  {{ page_title | default("Apply for a certificate") }} - GOV.UK
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='govuk/stylesheets/application.min.css') }}">
+{% endblock %}
+
+{% block header %}
+  {%- from 'govuk_frontend_jinja/components/header/macro.html' import govukHeader -%}
+  {{ govukHeader(params={
+      "serviceName": "Apply for a certificate",
+      "serviceUrl": url_for('index')
+  }) }}
+{% endblock %}
+
+{% block govukFooter %}
+  {%- from 'govuk_frontend_jinja/components/footer/macro.html' import govukFooter -%}
+  {{ govukFooter(params={}) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script type="module" src="{{ url_for('static', filename='govuk/javascripts/govuk-frontend.min.js') }}"></script>
+  <script type="module">
+    import { initAll } from "{{ url_for('static', filename='govuk/javascripts/govuk-frontend.min.js') }}";
+    initAll();
+  </script>
+{% endblock %}
