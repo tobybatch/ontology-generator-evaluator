@@ -76,15 +76,10 @@
             "text": "AI Model",
             "classes": "govuk-label--m"
           },
-          "items": [
-            {
-              "value": "model 1",
-              "text": "model 1"
-            },
-          ],
+          "items": models,
           "errorMessage": {
             "text": errors["ai_model"]
-          } if "ai_model" in  errors else None
+          } if "ai_model" in errors else None
         }) }}
 
         {{ govukInsetText(params={
