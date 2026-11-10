@@ -12,7 +12,7 @@
   {%- from 'govuk_frontend_jinja/components/header/macro.html' import govukHeader -%}
   {{ govukHeader(params={
       "serviceName": "Test Ontology Library",
-      "serviceUrl": url_for('index')
+      "serviceUrl": url_for('run.index')
   }) }}
 {% endblock %}
 
