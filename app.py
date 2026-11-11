@@ -1,15 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask
 from jinja2 import ChoiceLoader, FileSystemLoader, PackageLoader, PrefixLoader
+
 from routes.run import run_bp
 
 app = Flask(__name__)
 
-app.jinja_loader = ChoiceLoader([
-    FileSystemLoader("templates"),
-    PrefixLoader({
-        "govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")
-    }),
-])
+app.jinja_loader = ChoiceLoader(
+    [
+        FileSystemLoader("templates"),
+        PrefixLoader({"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}),
+    ]
+)
 
 app.register_blueprint(run_bp)
 

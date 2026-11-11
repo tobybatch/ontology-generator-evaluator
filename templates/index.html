@@ -54,33 +54,37 @@
           } if "processing_library" in errors else None
         }) }}
 
-        {{ govukInput(params={
-          "id": "ai_url",
-          "name": "ai_url",
+        {{ govukSelect(params={
+          "id": "ai_provider",
+          "name": "ai_provider",
+          "attributes": {
+            "data-models-url": url_for('run.update_ai_models')
+          },
           "label": {
-            "text": "AI URL",
+            "text": "AI Provider",
             "classes": "govuk-label--m"
           },
-          "value": "http://localhost:11434",
-          "autocomplete": "ai_url",
-          "spellcheck": false,
+          "items": ai_providers,
           "errorMessage": {
-            "text": errors["ai_url"]
-          } if "ai_url" in  errors else None
+            "text": errors["ai_provider"]
+          } if "ai_provider" in  errors else None
         }) }}
 
         {{ govukSelect(params={
           "id": "ai_model",
           "name": "ai_model",
+          "attributes": {"disabled": true},
           "label": {
             "text": "AI Model",
             "classes": "govuk-label--m"
           },
-          "items": models,
+          "items": [],
           "errorMessage": {
             "text": errors["ai_model"]
           } if "ai_model" in errors else None
         }) }}
+
+        <p id="ai-model-update-error" class="govuk-error-message" role="alert" hidden></p>
 
         {{ govukInsetText(params={
           "text": "During the dev stage, this is a single file. TODO: add multiple document uploads"
@@ -164,4 +168,16 @@
     </aside>
   </div>
 </div>
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script type="module" src="{{ url_for('static', filename='javascripts/ai-models.js') }}">
+
+  </script>
+{#    <script>#}
+{#        document.addEventListener("DOMContentLoaded", () => {#}
+{#        document.getElementById("ai_provider").blur();#}
+{#        });#}
+{#    </script>#}
 {% endblock %}
