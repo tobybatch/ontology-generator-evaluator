@@ -1,12 +1,13 @@
 from flask import Blueprint, render_template, request
 
-from services.run_service import get_dashboard_data, AI_PROVIDERS
 from flask import request
+
+from ontology_generator_evaluator.services.run_service import get_dashboard_data, AI_PROVIDERS
 
 run_bp = Blueprint("run", __name__)
 
 
-@run_bp.route("/")
+@run_bp.route("/", methods=["GET", "POST"])
 def index():
     data = get_dashboard_data()
     return render_template("index.html", **data)

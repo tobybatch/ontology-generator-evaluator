@@ -20,6 +20,13 @@
     <form method="POST" enctype="multipart/form-data" novalidate>
 
       <p class="govuk-body">
+        {{ govukWarningText(params={
+            "text": "This is a prototype service.",
+            "iconFallbackText": "Warning"
+        }) }}
+
+        <input type="hidden" name="run_id" value="{{ run_id }}">
+
         {{ govukInput(params={
             "label": {
               "text": "Run name",
@@ -29,6 +36,7 @@
             "id": "run_name",
             "name": "run_name",
             "value": run_name,
+            "required": true,
             "autocomplete": "run_name",
             "spellcheck": false,
             "errorMessage": {
@@ -43,12 +51,7 @@
             "text": "Processing library",
             "classes": "govuk-label--m"
           },
-          "items": [
-            {
-              "value": "lib1",
-              "text": "lib1"
-            },
-          ],
+          "items": lib_providers,
           "errorMessage": {
             "text": errors["processing_library"]
           } if "processing_library" in errors else None
@@ -76,6 +79,7 @@
           "attributes": {"disabled": true},
           "label": {
             "text": "AI Model",
+            "isPageHeading": false,
             "classes": "govuk-label--m"
           },
           "items": [],
@@ -90,12 +94,16 @@
           "text": "During the dev stage, this is a single file. TODO: add multiple document uploads"
         }) }}
 
+        {% if input_documents|length > 0 %}
+        <h2>Input documents</h2>
+        {% endif %}
+
         {{ govukFileUpload(params={
             "id": "input_data",
             "name": "input_data",
             "label": {
               "text": "Upload a source document",
-              "isPageHeading": true,
+              "isPageHeading": false,
               "classes": "govuk-label--m"
             },
             "hint": {
@@ -112,10 +120,12 @@
         {{ govukTextarea(params={
             "name": "processing_prompt",
             "id": "processing_prompt",
+            "required": true,
             "rows": 5,
-            "value": "detail_text",
+            "value": processing_prompt,
             "label": {
-              "text": "Processing prompt",
+              "text": "As an expert on content schema and meta data, can you extract the content schema and meta data from the document and return it in TTL format?",
+              "isPageHeading": false,
               "classes": "govuk-label--m"
             },
             "errorMessage": {
