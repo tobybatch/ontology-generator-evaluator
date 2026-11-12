@@ -9,7 +9,7 @@ run_bp = Blueprint("run", __name__)
 
 @run_bp.route("/", methods=["GET", "POST"])
 def index():
-    data = get_dashboard_data()
+    data = get_dashboard_data(request)
     return render_template("index.html", **data)
 
 

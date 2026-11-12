@@ -96,6 +96,11 @@
 
         {% if input_documents|length > 0 %}
         <h2>Input documents</h2>
+            <ul>
+            {%  for source in input_sources %}
+                <li>{{ source }}</li>
+            {%  endfor %}
+            </ul>
         {% endif %}
 
         {{ govukFileUpload(params={
@@ -124,7 +129,7 @@
             "rows": 5,
             "value": processing_prompt,
             "label": {
-              "text": "As an expert on content schema and meta data, can you extract the content schema and meta data from the document and return it in TTL format?",
+              "text": "Processing Prompt",
               "isPageHeading": false,
               "classes": "govuk-label--m"
             },
