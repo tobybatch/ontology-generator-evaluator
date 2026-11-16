@@ -9,8 +9,8 @@ export default defineConfig({
   },
 
   webServer: {
-    command: 'python app.py', // or your Flask startup command
+    command: 'uv run flask run',
     url: 'http://127.0.0.1:5000',
     reuseExistingServer: !process.env.CI,
-  },
+  }
 });
