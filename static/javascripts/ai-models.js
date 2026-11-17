@@ -34,7 +34,9 @@ export async function updateAiModels() {
     }
 
     if (requestId === latestModelRequest) {
-      aiModel.replaceChildren(...models.map(model => new Option(model.name, model.model)));
+      aiModel.replaceChildren(...models.map(model =>
+        new Option(model.name, model.model, false, model.model === aiModel.dataset.selectedModel)
+      ));
     }
     aiModel.disabled = false;
   } catch (error) {

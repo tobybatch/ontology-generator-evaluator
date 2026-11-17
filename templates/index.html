@@ -25,7 +25,7 @@
             "iconFallbackText": "Warning"
         }) }}
 
-        <input type="hidden" name="run_id" value="{{ run_id }}">
+        <input type="hidden" name="run_id" value="{{ run_model.run_id }}">
 
         {{ govukInput(params={
             "label": {
@@ -35,7 +35,7 @@
             },
             "id": "run_name",
             "name": "run_name",
-            "value": run_name,
+            "value": run_model.name,
             "required": true,
             "autocomplete": "run_name",
             "spellcheck": false,
@@ -51,6 +51,7 @@
             "text": "Processing library",
             "classes": "govuk-label--m"
           },
+          "value": run_model.library,
           "items": lib_providers,
           "errorMessage": {
             "text": errors["processing_library"]
@@ -67,6 +68,7 @@
             "text": "AI Provider",
             "classes": "govuk-label--m"
           },
+          "value": run_model.ai_provider,
           "items": ai_providers,
           "errorMessage": {
             "text": errors["ai_provider"]
@@ -76,7 +78,10 @@
         {{ govukSelect(params={
           "id": "ai_model",
           "name": "ai_model",
-          "attributes": {"disabled": true},
+          "attributes": {
+            "disabled": true,
+            "data-selected-model": run_model.ai_model
+          },
           "label": {
             "text": "AI Model",
             "isPageHeading": false,
@@ -97,7 +102,7 @@
         {% if input_documents|length > 0 %}
         <h2>Input documents</h2>
             <ul>
-            {%  for source in input_sources %}
+            {%  for source in run_model.input_sources %}
                 <li>{{ source }}</li>
             {%  endfor %}
             </ul>
@@ -127,7 +132,7 @@
             "id": "processing_prompt",
             "required": true,
             "rows": 5,
-            "value": processing_prompt,
+            "value": run_model.prompt,
             "label": {
               "text": "Processing Prompt",
               "isPageHeading": false,
@@ -187,12 +192,5 @@
 
 {% block bodyEnd %}
   {{ super() }}
-  <script type="module" src="{{ url_for('static', filename='javascripts/ai-models.js') }}">
-
-  </script>
-{#    <script>#}
-{#        document.addEventListener("DOMContentLoaded", () => {#}
-{#        document.getElementById("ai_provider").blur();#}
-{#        });#}
-{#    </script>#}
+  <script type="module" src="{{ url_for('static', filename='javascripts/ai-models.js') }}"></script>
 {% endblock %}

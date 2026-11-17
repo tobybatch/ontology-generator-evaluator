@@ -70,6 +70,29 @@ test('renders the source document upload and guidance', async ({ page }) => {
   ).toBeVisible();
 });
 
+for (const savedModel of ['second-model', 'unavailable-model', '']) {
+  test(`selects the saved AI model or defaults to the first option (${savedModel || 'empty'})`, async ({ page }) => {
+    await page.route('**/update_ai_models?*', async route => {
+      await route.fulfill({
+        json: [
+          { name: 'First model', model: 'first-model' },
+          { name: 'Second model', model: 'second-model' },
+        ],
+      });
+    });
+
+    const response = await page.request.post('/', {
+      form: { ai_model: savedModel },
+    });
+    await page.route('http://127.0.0.1:5000/', route => route.fulfill({ response }));
+    await page.goto('/');
+
+    const aiModel = page.getByRole('combobox', { name: 'AI Model', exact: true });
+    await expect(aiModel).toBeEnabled();
+    await expect(aiModel).toHaveValue(savedModel === 'second-model' ? savedModel : 'first-model');
+  });
+}
+
 test('renders the previous runs sidebar', async ({ page }) => {
   const sidebar = page.getByRole('complementary');
   await expect(sidebar.getByRole('heading', { name: 'Previous runs', level: 2 })).toBeVisible();
