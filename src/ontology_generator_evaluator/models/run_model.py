@@ -6,7 +6,7 @@ from typing import List
 class RunModel:
     id: str
     name: str
-    library: str
+    processing_library: str
     ai_provider: str
     ai_model: str
     input_sources: List[str] = field(default_factory=list)
@@ -16,7 +16,7 @@ class RunModel:
         return {
             "id": self.id,
             "name": self.name,
-            "library": self.library,
+            "processing_library": self.processing_library,
             "ai_provider": self.ai_provider,
             "ai_model": self.ai_model,
             "input_sources": self.input_sources,
@@ -28,7 +28,7 @@ class RunModel:
         return cls(
             id=data.get("id", ""),
             name=data["name"],
-            library=data["library"],
+            processing_library=data["processing_library"],
             ai_provider=data["ai_provider"],
             ai_model=data["ai_model"],
             input_sources=data.get("input_sources", []),

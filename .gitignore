@@ -1,3 +1,6 @@
+# Project specific files
+storage/run_model
+
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -43,3 +46,4 @@ node_modules
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 test-results/
+/storage/
