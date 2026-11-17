@@ -5,6 +5,7 @@
 {%- from 'govuk_frontend_jinja/components/textarea/macro.html' import govukTextarea -%}
 {%- from 'govuk_frontend_jinja/components/file-upload/macro.html' import govukFileUpload -%}
 {%- from 'govuk_frontend_jinja/components/select/macro.html' import govukSelect -%}
+{%- from 'govuk_frontend_jinja/components/checkboxes/macro.html' import govukCheckboxes -%}
 {%- from 'govuk_frontend_jinja/components/warning-text/macro.html' import govukWarningText -%}
 {%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
 
@@ -95,22 +96,26 @@
 
         <p id="ai-model-update-error" class="govuk-error-message" role="alert" hidden></p>
 
-        {{ govukInsetText(params={
-          "text": "During the dev stage, this is a single file. TODO: add multiple document uploads"
-        }) }}
-
-        {% if input_documents|length > 0 %}
-        <h2>Input documents</h2>
-            <ul>
-            {%  for source in run_model.input_sources %}
-                <li>{{ source }}</li>
-            {%  endfor %}
-            </ul>
+        {% if run_model.input_sources|length > 0 %}
+            {{ govukCheckboxes(params={
+                "name": "documents",
+                "fieldset": {
+                    "legend": {
+                        "text": "Documents",
+                        "isPageHeading": false,
+                        "classes": "govuk-fieldset__legend--m"
+                    }
+                },
+                "items": input_source_checkbox_values,
+            }) }}
+            {{ govukInsetText(params={
+              "text": "Tick the box to remove the documents from the run. If you want to add more documents, upload them below."
+            }) }}
         {% endif %}
 
         {{ govukFileUpload(params={
-            "id": "input_data",
-            "name": "input_data",
+            "id": "input_docs",
+            "name": "input_docs",
             "label": {
               "text": "Upload a source document",
               "isPageHeading": false,
@@ -120,8 +125,8 @@
               "text": "The file must be a MD or DOCX."
             },
             "errorMessage": {
-              "text": errors["input_data"]
-            } if "input_data" in errors else None,
+              "text": errors["input_docs"]
+            } if "input_docs" in errors else None,
             "attributes": {
               "accept": ".md,.docx"
             }
@@ -146,6 +151,7 @@
             {{ govukButton(params={
             "text": "Go"
             }) }}
+
       </p>
     </form>
 
@@ -180,9 +186,15 @@
       <h2 class="govuk-heading-m" id="subsection-title">Previous runs</h2>
       <nav role="navigation" aria-labelledby="subsection-title">
         <ul class="govuk-list govuk-!-font-size-16">
-          <li>
-            <a class="govuk-link" href="#">Run one</a>
-          </li>
+            {% if previous_runs|length > 0 %}
+            {% for previous_run in previous_runs %}
+              <li>
+                <a class="govuk-link" href="?run={{ previous_run.value }}">{{ previous_run.text }}</a>
+              </li>
+            {% endfor %}
+          {% else %}
+            <li>No previous runs found.</li>
+          {% endif %}
         </ul>
       </nav>
     </aside>

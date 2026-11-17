@@ -26,3 +26,18 @@ def load_run_model(run_id: str) -> RunModel:
         data = json.load(f)
 
     return RunModel.from_dict(data)
+
+
+def list_runs() -> list[Path]:
+    storage_path = _get_storage_path()
+    run_models = []
+    for file in storage_path.iterdir():
+        if file.is_file() and file.suffix == ".json":
+            run_models.append(file)
+    return run_models
+
+
+def delete_run(run_id: str) -> None:
+    file_path = _get_storage_path() / f"{run_id}.json"
+    if file_path.exists():
+        file_path.unlink()
