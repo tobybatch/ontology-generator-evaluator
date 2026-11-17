@@ -1,10 +1,11 @@
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
+from werkzeug.wrappers import Request
 from werkzeug.utils import secure_filename
 
 import config
-from config import load_config
 from ontology_generator_evaluator.models.run_model import RunModel
 from ontology_generator_evaluator.repositories.run_repository import (
     list_runs,
@@ -14,67 +15,67 @@ from ontology_generator_evaluator.repositories.run_repository import (
 from ontology_generator_evaluator.services.ai_providers import AI_PROVIDERS
 from ontology_generator_evaluator.services.lib_providers import LIB_PROVIDERS
 
-load_config()
+config.load_config()
 
 
-def get_dashboard_data(request):
-    errors = {}
+def _generate_timestamped_name(prefix: str) -> str:
+    return f"{prefix}.{datetime.now():%Y-%m-%d.%H-%M-%S}"
+
+
+def _handle_post_request(request: Request) -> RunModel:
+    run_model = RunModel.from_request(request.form)
+
+    if not run_model.name:
+        run_model.name = _generate_timestamped_name("run")
+
+    if run_model.id:
+        input_docs = request.files.get("input_docs")
+        if input_docs:
+            # TODO: add validation and error handling for input_docs
+            files_path = Path(config.STORAGE_PATH) / run_model.id
+            files_path.mkdir(parents=True, exist_ok=True)
+
+            raw_filename = input_docs.filename or _generate_timestamped_name("file")
+            destination = files_path / secure_filename(raw_filename)
+            input_docs.save(destination)
+
+            destination_str = str(destination)
+            if destination_str not in run_model.input_sources:
+                run_model.input_sources = [destination_str]
+
+        save_run_model(run_model)
+
+    return run_model
+
+
+def get_dashboard_data(request: Request) -> dict[str, Any]:
+    errors: dict[str, str] = {}
+
     if request.method == "GET":
         run_id = request.args.get("run")
-        if run_id:
-            run_model = load_run_model(run_id)
-        else:
-            run_model = RunModel(
-                id="run." + datetime.now().strftime("%Y-%m-%d.%H-%M-%S"),
+        run_model = (
+            load_run_model(run_id)
+            if run_id
+            else RunModel(
+                id=_generate_timestamped_name("run"),
                 name="",
                 processing_library="",
                 ai_provider="",
                 ai_model="",
             )
+        )
     else:
-        run_model = RunModel.from_request(request.form)
+        run_model = _handle_post_request(request)
 
-        if not run_model.name:
-            run_model.name = "run." + datetime.now().strftime("%Y-%m-%d.%H-%M-%S")
-
-        if run_model.id:
-            input_docs = request.files.get("input_docs", None)
-            files_path = Path(config.STORAGE_PATH) / run_model.id
-            if input_docs:
-                # TODO add some validation and error handling for input_docs
-
-                filename = secure_filename(
-                    input_docs.filename or "file." + datetime.now().strftime("%Y-%m-%d.%H-%M-%S")
-                )
-                files_path.mkdir(parents=True, exist_ok=True)
-                destination = files_path / filename
-                input_docs.save(destination)
-                if destination not in run_model.input_sources:
-                    run_model.input_sources = [str(destination)]
-            save_run_model(run_model)
-
-    previous_runs = [
-        {
-            "value": Path(path).stem,
-            "text": Path(path).stem,
-        }
-        for path in list_runs()
-    ]
-
+    previous_runs = [{"value": path.stem, "text": path.stem} for path in list_runs()]
     input_source_checkbox_values = [
-        {
-            "value": str(file),
-            "text": file,
-        }
-        for file in run_model.input_sources
+        {"value": str(file), "text": str(file)} for file in run_model.input_sources
     ]
 
     return {
-        # select options
-        "lib_providers": [{"text": key, "value": key} for key in LIB_PROVIDERS.keys()],
-        "ai_providers": [{"text": key, "value": key} for key in AI_PROVIDERS.keys()],
+        "lib_providers": [{"text": key, "value": key} for key in LIB_PROVIDERS],
+        "ai_providers": [{"text": key, "value": key} for key in AI_PROVIDERS],
         "input_source_checkbox_values": input_source_checkbox_values,
-        # model data
         "run_model": run_model,
         "previous_runs": previous_runs,
         "errors": errors,
