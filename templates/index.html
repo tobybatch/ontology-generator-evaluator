@@ -20,6 +20,10 @@
 
     <form method="POST" enctype="multipart/form-data" novalidate>
 
+      {% if start_message %}
+        {{ govukInsetText(params={"text": start_message}) }}
+      {% endif %}
+
       <p class="govuk-body">
         {{ govukWarningText(params={
             "text": "This is a prototype service.",
@@ -148,9 +152,19 @@
             } if "processing_prompt" in errors else None
           }) }}
 
-            {{ govukButton(params={
-            "text": "Go"
-            }) }}
+        <div class="govuk-button-group">
+          {{ govukButton(params={
+            "text": "Update",
+            "name": "action",
+            "value": "update",
+            "classes": "govuk-button--secondary"
+          }) }}
+          {{ govukButton(params={
+            "text": "Start",
+            "name": "action",
+            "value": "start"
+          }) }}
+        </div>
 
       </p>
     </form>

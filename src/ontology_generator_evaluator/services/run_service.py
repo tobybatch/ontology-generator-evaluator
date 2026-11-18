@@ -2,8 +2,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from werkzeug.wrappers import Request
 from werkzeug.utils import secure_filename
+from werkzeug.wrappers import Request
 
 import config
 from ontology_generator_evaluator.models.run_model import RunModel
@@ -69,3 +69,9 @@ def get_dashboard_data(request: Request) -> dict[str, Any]:
         "previous_runs": previous_runs,
         "errors": errors,
     }
+
+
+def start_run(request: Request) -> dict[str, Any]:
+    data = get_dashboard_data(request)
+    data["start_message"] = "Your changes have been saved. Run execution is not implemented yet."
+    return data

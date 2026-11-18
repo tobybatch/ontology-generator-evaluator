@@ -21,7 +21,7 @@ test('renders the service introduction', async ({ page }) => {
   await expect(page.getByText('This is a prototype service.')).toBeVisible();
 });
 
-test('renders empty run details and the submit button', async ({ page }) => {
+test('renders empty run details and the submit buttons', async ({ page }) => {
   const runName = page.getByRole('textbox', { name: 'Run name', exact: true });
   await expect(runName).toBeVisible();
   await expect(runName).toBeEditable();
@@ -32,8 +32,10 @@ test('renders empty run details and the submit button', async ({ page }) => {
   await expect(processingPrompt).toBeEditable();
   await expect(processingPrompt).toBeEmpty();
 
-  await expect(page.getByRole('button', { name: 'Go', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Go', exact: true })).toBeEnabled();
+  for (const name of ['Update', 'Start']) {
+    await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name, exact: true })).toBeEnabled();
+  }
 });
 
 test('renders processing library, AI provider and model options', async ({ page }) => {

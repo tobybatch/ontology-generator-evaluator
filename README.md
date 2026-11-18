@@ -23,6 +23,10 @@ Run it with
 uv run flask run --debug
 ```
 
+On the dashboard, **Update** saves the form using the existing dashboard handler.
+**Start** calls the new `start_run` placeholder, which also saves the form and
+displays a message that run execution is not implemented yet.
+
 Run tests with 
 
 ```bash
