@@ -16,3 +16,9 @@ environment variables take precedence over `.env` values.
 
 The `.env` file is ignored by Git. Never commit your API key. OpenAI requests
 raise an error if `OPENAI_API_KEY` is missing or empty.
+
+Run it with 
+
+```bash
+uv run flask run --debug
+```
