@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 ENV_FILE = Path(__file__).resolve().parent / ".env"
 STORAGE_PATH = 'storage'
 RUN_MODEL_STORAGE_PATH = os.path.join(STORAGE_PATH, 'run_model')
+DEFAULT_PROMPT = 'As an expert on content schema and meta data, can you extract the content schema and meta data from the document and return it in TTL format?'
 
 
 def load_config() -> None:

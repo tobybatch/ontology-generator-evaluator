@@ -7,11 +7,6 @@ from werkzeug.utils import secure_filename
 
 import config
 from ontology_generator_evaluator.models.run_model import RunModel
-from ontology_generator_evaluator.repositories.run_repository import (
-    list_runs,
-    load_run_model,
-    save_run_model,
-)
 from ontology_generator_evaluator.services.ai_providers import AI_PROVIDERS
 from ontology_generator_evaluator.services.lib_providers import LIB_PROVIDERS
 
@@ -43,7 +38,7 @@ def _handle_post_request(request: Request) -> RunModel:
             if destination_str not in run_model.input_sources:
                 run_model.input_sources = [destination_str]
 
-        save_run_model(run_model)
+        run_model.save()
 
     return run_model
 
@@ -54,7 +49,7 @@ def get_dashboard_data(request: Request) -> dict[str, Any]:
     if request.method == "GET":
         run_id = request.args.get("run")
         run_model = (
-            load_run_model(run_id)
+            RunModel.load(run_id)
             if run_id
             else RunModel(
                 id=_generate_timestamped_name("run"),
@@ -67,7 +62,7 @@ def get_dashboard_data(request: Request) -> dict[str, Any]:
     else:
         run_model = _handle_post_request(request)
 
-    previous_runs = [{"value": path.stem, "text": path.stem} for path in list_runs()]
+    previous_runs = [{"value": path.stem, "text": path.stem} for path in RunModel.list()]
     input_source_checkbox_values = [
         {"value": str(file), "text": str(file)} for file in run_model.input_sources
     ]
