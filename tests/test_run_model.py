@@ -44,21 +44,19 @@ def test_from_request_uses_defaults_when_form_fields_are_missing(tmp_path, monke
     assert run_model.ai_provider == ""
     assert run_model.ai_model == ""
     assert run_model.input_sources == []
-    assert run_model.prompt == ""
+    assert run_model.prompt == config.DEFAULT_PROMPT
 
 
 def test_save_load_list_update_and_delete(tmp_path, monkeypatch):
     storage_path = tmp_path / "runs"
     monkeypatch.setattr(config, "RUN_MODEL_STORAGE_PATH", str(storage_path))
-    run_model = RunModel(
-        id="run-1",
-        name="First run",
-        processing_library="Langchain",
-        ai_provider="OpenAI",
-        ai_model="gpt-test",
-        input_sources=["source.pdf"],
-        prompt="Extract entities",
-    )
+    run_model = RunModel("run-1")
+    run_model.name = "First run"
+    run_model.processing_library = "Langchain"
+    run_model.ai_provider = "OpenAI"
+    run_model.ai_model = "gpt-test"
+    run_model.input_sources = ["source.pdf"]
+    run_model.prompt = "Extract entities"
 
     run_model.save()
 
@@ -88,4 +86,4 @@ def test_from_dict_supports_legacy_optional_fields():
 
     assert run_model.id == ""
     assert run_model.input_sources == []
-    assert run_model.prompt == ""
+    assert run_model.prompt == config.DEFAULT_PROMPT

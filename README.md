@@ -22,3 +22,15 @@ Run it with
 ```bash
 uv run flask run --debug
 ```
+
+Run tests with 
+
+```bash
+uv run pytest -q
+```
+
+Run e2e tests with 
+
+```bash
+npm run test:e2e
+```

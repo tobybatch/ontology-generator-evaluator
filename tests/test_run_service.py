@@ -30,13 +30,7 @@ def test_get_dashboard_data_creates_new_run_data(monkeypatch, tmp_path):
 
     data = run_service.get_dashboard_data(_request())
 
-    assert data["run_model"] == RunModel(
-        id="run.fixed",
-        name="",
-        processing_library="",
-        ai_provider="",
-        ai_model="",
-    )
+    assert data["run_model"] == RunModel("run.fixed")
     assert data["previous_runs"] == []
     assert data["input_source_checkbox_values"] == []
     assert [item["value"] for item in data["lib_providers"]] == list(run_service.LIB_PROVIDERS)
@@ -46,15 +40,13 @@ def test_get_dashboard_data_creates_new_run_data(monkeypatch, tmp_path):
 
 def test_get_dashboard_data_loads_requested_run_and_lists_saved_runs(monkeypatch, tmp_path):
     _set_storage_paths(monkeypatch, tmp_path)
-    saved_run = RunModel(
-        id="run-saved",
-        name="Saved run",
-        processing_library="Langchain",
-        ai_provider="OpenAI",
-        ai_model="gpt-test",
-        input_sources=["source.pdf"],
-        prompt="Extract entities",
-    )
+    saved_run = RunModel("run-saved")
+    saved_run.name = "Saved run"
+    saved_run.processing_library = "Langchain"
+    saved_run.ai_provider = "OpenAI"
+    saved_run.ai_model = "gpt-test"
+    saved_run.input_sources = ["source.pdf"]
+    saved_run.prompt = "Extract entities"
     saved_run.save()
 
     data = run_service.get_dashboard_data(_request(query_string="run=run-saved"))

@@ -51,13 +51,7 @@ def get_dashboard_data(request: Request) -> dict[str, Any]:
         run_model = (
             RunModel.load(run_id)
             if run_id
-            else RunModel(
-                id=_generate_timestamped_name("run"),
-                name="",
-                processing_library="",
-                ai_provider="",
-                ai_model="",
-            )
+            else RunModel(_generate_timestamped_name("run"))
         )
     else:
         run_model = _handle_post_request(request)
