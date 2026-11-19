@@ -15,6 +15,7 @@ dependencies = [
     "govuk-frontend-jinja>=4.1.0",
     "govuk-frontend-wtf>=3.2.0",
     "jinja2>=3.1.6",
+    "pydantic>=2.14.3",
     "python-dotenv>=1.2.1",
     "requests>=2.34.2",
 ]
