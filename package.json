@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "uv run pre-commit install",
     "clean": "rimraf static/govuk",
     "copy:assets": "copyfiles -u 5 \"node_modules/govuk-frontend/dist/govuk/assets/**/*\" static/govuk/assets",
     "copy:js": "copyfiles -f node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js static/govuk/javascripts",

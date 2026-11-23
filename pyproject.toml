@@ -70,6 +70,8 @@ major_version_zero = true
 template = ".changelog.j2"
 
 [tool.commitizen.customize]
+schema = "<type>(<scope>): <description>"
+schema_pattern = "^(feat|fix|refactor|docs|tests|chore|build)(\\([^\\)\\r\\n]+\\))?:[ \\t]+\\S[^\\r\\n]*(\\r?\\n|$)"
 commit_parser = "^(?P<change_type>feat|fix|refactor|docs|tests|chore|build)(\\((?P<scope>[^\\)]+)\\))?:\\s(?P<message>.*)$"
 changelog_pattern = "^(feat|fix|refactor|docs|tests|chore|build)"
 change_type_map = { "feat" = "Features", "fix" = "Bug Fixes", "refactor" = "Refactoring", "docs" = "Documentation", "tests" = "Tests", "chore" = "Chores", "build" = "Builds" }

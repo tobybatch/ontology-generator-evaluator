@@ -27,8 +27,29 @@ The following table shows sample models with different RAM sizes:
 | llama3.2:latest            | 2.0 GB |  
 
 
-Install dependencies with `uv sync`, then copy `.env.example` to `.env` in the
-project root and set your key:
+Install the JavaScript and Python dependencies and Git hooks with:
+
+```bash
+npm install
+```
+
+The npm `postinstall` script runs `uv run pre-commit install`, which syncs the
+Python environment and installs the hooks. It requires `uv` and a Git
+checkout. If npm lifecycle scripts are disabled, or you only need the Python
+environment, install the hooks separately:
+
+```bash
+uv sync
+uv run pre-commit install
+```
+
+`uv sync` does not install Git hooks automatically. The hooks run Ruff on
+staged files and validate commit messages with Commitizen. Use a message such as
+`feat: add a provider` or `fix(api): handle errors`; the supported types are
+`feat`, `fix`, `refactor`, `docs`, `tests`, `chore`, and `build`.
+Commitizen also permits its default merge, revert, and fixup prefixes.
+
+Copy `.env.example` to `.env` in the project root and set your key:
 
 ```dotenv
 OPENAI_API_KEY=your-openai-api-key

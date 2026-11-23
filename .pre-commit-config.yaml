@@ -1,3 +1,5 @@
+default_install_hook_types: [pre-commit, commit-msg]
+
 repos:
   # Ruff Linter & Formatter
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -7,10 +9,11 @@ repos:
         args: [--fix]
       - id: ruff-format
 
-  # Git Commit Message Rules (Conventional Commits)
-  - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.0.0
+  # Validate commit messages against the project's Commitizen schema.
+  - repo: local
     hooks:
-      - id: conventional-pre-commit
+      - id: commitizen
+        name: commitizen
+        entry: uv run --no-sync cz check --commit-msg-file
+        language: system
         stages: [commit-msg]
-        args: []
