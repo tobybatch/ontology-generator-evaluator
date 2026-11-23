@@ -9,9 +9,10 @@ run_bp = Blueprint("run", __name__)
 def index():
     if request.method == "POST" and request.form.get("action") == "start":
         data = start_run(request)
+        return render_template("start_run.html", **data)
     else:
         data = get_dashboard_data(request)
-    return render_template("index.html", **data)
+        return render_template("index.html", **data)
 
 
 @run_bp.route("/update_ai_models")

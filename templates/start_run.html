@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Running {{ run_model.name }}</h1>
+
+    <p class="govuk-body-l">
+      Use this service to test Ontology generation using a variety of AI models and processing libraries.
+    </p>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+{% endblock %}

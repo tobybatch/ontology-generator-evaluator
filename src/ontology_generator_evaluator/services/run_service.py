@@ -48,18 +48,12 @@ def get_dashboard_data(request: Request) -> dict[str, Any]:
 
     if request.method == "GET":
         run_id = request.args.get("run")
-        run_model = (
-            RunModel.load(run_id)
-            if run_id
-            else RunModel(_generate_timestamped_name("run"))
-        )
+        run_model = RunModel.load(run_id) if run_id else RunModel(_generate_timestamped_name("run"))
     else:
         run_model = _handle_post_request(request)
 
     previous_runs = [{"value": path.stem, "text": path.stem} for path in RunModel.list()]
-    input_source_checkbox_values = [
-        {"value": str(file), "text": str(file)} for file in run_model.input_sources
-    ]
+    input_source_checkbox_values = [{"value": str(file), "text": str(file)} for file in run_model.input_sources]
 
     return {
         "lib_providers": [{"text": key, "value": key} for key in LIB_PROVIDERS],
@@ -73,5 +67,10 @@ def get_dashboard_data(request: Request) -> dict[str, Any]:
 
 def start_run(request: Request) -> dict[str, Any]:
     data = get_dashboard_data(request)
-    data["start_message"] = "Your changes have been saved. Run execution is not implemented yet."
+    # load/create run status
+    # for each input source
+    #   run the chunker
+    #   save the chunks
+    #   trigger the next chunk
+
     return data
