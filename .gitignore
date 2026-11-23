@@ -1,5 +1,7 @@
 # Project specific files
 storage/run_model
+static/govuk/stylesheets
+static/govuk/javascripts
 
 # Python-generated files
 __pycache__/

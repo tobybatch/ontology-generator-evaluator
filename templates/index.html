@@ -30,143 +30,150 @@
             "iconFallbackText": "Warning"
         }) }}
 
-        <input type="hidden" name="run_id" value="{{ run_model.id }}">
+        <input type="hidden" name="run_id" value="{{ run_model.id }}" />
 
-        {{ govukInput(params={
-            "label": {
-              "text": "Run name",
-              "isPageHeading": false,
-              "classes": "govuk-label--m"
-            },
-            "id": "run_name",
-            "name": "run_name",
-            "value": run_model.name,
-            "required": true,
-            "autocomplete": "run_name",
-            "spellcheck": false,
-            "errorMessage": {
-              "text": errors["run_name"]
-            } if "run_name" in errors else None
-          }) }}
-
-        {{ govukSelect(params={
-          "id": "processing_library",
-          "name": "processing_library",
-          "label": {
-            "text": "Processing library",
-            "classes": "govuk-label--m"
-          },
-          "value": run_model.library,
-          "items": lib_providers,
-          "errorMessage": {
-            "text": errors["processing_library"]
-          } if "processing_library" in errors else None
-        }) }}
-
-        {{ govukSelect(params={
-          "id": "ai_provider",
-          "name": "ai_provider",
-          "attributes": {
-            "data-models-url": url_for('run.update_ai_models')
-          },
-          "label": {
-            "text": "AI Provider",
-            "classes": "govuk-label--m"
-          },
-          "value": run_model.ai_provider,
-          "items": ai_providers,
-          "errorMessage": {
-            "text": errors["ai_provider"]
-          } if "ai_provider" in  errors else None
-        }) }}
-
-        {{ govukSelect(params={
-          "id": "ai_model",
-          "name": "ai_model",
-          "attributes": {
-            "disabled": true,
-            "data-selected-model": run_model.ai_model
-          },
-          "label": {
-            "text": "AI Model",
-            "isPageHeading": false,
-            "classes": "govuk-label--m"
-          },
-          "items": [],
-          "errorMessage": {
-            "text": errors["ai_model"]
-          } if "ai_model" in errors else None
-        }) }}
-
-        <p id="ai-model-update-error" class="govuk-error-message" role="alert" hidden></p>
-
-        {% if run_model.input_sources|length > 0 %}
-            {{ govukCheckboxes(params={
-                "name": "documents",
-                "fieldset": {
-                    "legend": {
-                        "text": "Documents",
-                        "isPageHeading": false,
-                        "classes": "govuk-fieldset__legend--m"
-                    }
+        <ul class="ontology__list">
+          <li class="ontology__list-item">
+            {{ govukInput(params={
+                "label": {
+                  "text": "Run name",
+                  "isPageHeading": false,
+                  "classes": "govuk-label--m"
                 },
-                "items": input_source_checkbox_values,
+                "id": "run_name",
+                "name": "run_name",
+                "value": run_model.name,
+                "required": true,
+                "autocomplete": "run_name",
+                "spellcheck": false,
+                "errorMessage": {
+                  "text": errors["run_name"]
+                } if "run_name" in errors else None
+              }) }}
+          </li>
+          <li class="ontology__list-item">
+            {{ govukSelect(params={
+              "id": "processing_library",
+              "name": "processing_library",
+              "label": {
+                "text": "Processing library",
+                "classes": "govuk-label--m"
+              },
+              "value": run_model.library,
+              "items": lib_providers,
+              "errorMessage": {
+                "text": errors["processing_library"]
+              } if "processing_library" in errors else None
             }) }}
-            {{ govukInsetText(params={
-              "text": "Tick the box to remove the documents from the run. If you want to add more documents, upload them below."
-            }) }}
-        {% endif %}
-
-        {{ govukFileUpload(params={
-            "id": "input_docs",
-            "name": "input_docs",
-            "label": {
-              "text": "Upload a source document",
-              "isPageHeading": false,
-              "classes": "govuk-label--m"
-            },
-            "hint": {
-              "text": "The file must be a MD or DOCX."
-            },
-            "errorMessage": {
-              "text": errors["input_docs"]
-            } if "input_docs" in errors else None,
-            "attributes": {
-              "accept": ".md,.docx"
-            }
+          </li>
+          <li class="ontology__list-item">
+            {{ govukSelect(params={
+              "id": "ai_provider",
+              "name": "ai_provider",
+              "attributes": {
+                "data-models-url": url_for('run.update_ai_models')
+              },
+              "label": {
+                "text": "AI Provider",
+                "classes": "govuk-label--m"
+              },
+              "value": run_model.ai_provider,
+              "items": ai_providers,
+              "errorMessage": {
+                "text": errors["ai_provider"]
+              } if "ai_provider" in  errors else None
             }) }}
 
-        {{ govukTextarea(params={
-            "name": "processing_prompt",
-            "id": "processing_prompt",
-            "required": true,
-            "rows": 5,
-            "value": run_model.prompt,
-            "label": {
-              "text": "Processing Prompt",
-              "isPageHeading": false,
-              "classes": "govuk-label--m"
-            },
-            "errorMessage": {
-              "text": errors["processing_prompt"]
-            } if "processing_prompt" in errors else None
-          }) }}
+            {{ govukSelect(params={
+              "id": "ai_model",
+              "name": "ai_model",
+              "attributes": {
+                "disabled": true,
+                "data-selected-model": run_model.ai_model
+              },
+              "label": {
+                "text": "AI Model",
+                "isPageHeading": false,
+                "classes": "govuk-label--m"
+              },
+              "items": [],
+              "errorMessage": {
+                "text": errors["ai_model"]
+              } if "ai_model" in errors else None
+            }) }}
 
-        <div class="govuk-button-group">
-          {{ govukButton(params={
-            "text": "Update",
-            "name": "action",
-            "value": "update",
-            "classes": "govuk-button--secondary"
-          }) }}
-          {{ govukButton(params={
-            "text": "Start",
-            "name": "action",
-            "value": "start"
-          }) }}
-        </div>
-
-      </p>
+            <p id="ai-model-update-error" class="govuk-error-message" role="alert" hidden></p>
+          </li>
+          <li class="ontology__list-item">
+              <h2 class="govuk-label--m">Data sources</h2>
+            {% if run_model.input_sources|length > 0 %}
+                    {{ govukCheckboxes(params={
+                        "name": "documents",
+                        "fieldset": {
+                            "legend": {
+                                "text": "Existing Documents",
+                                "isPageHeading": false,
+                                "classes": "govuk-fieldset__legend--s"
+                            }
+                        },
+                        "items": input_source_checkbox_values,
+                    }) }}
+                    {{ govukInsetText(params={
+                      "text": "Tick the box to remove the documents from the run. If you want to add more documents, upload them below."
+                    }) }}
+            {% endif %}
+            {{ govukFileUpload(params={
+                "id": "input_docs",
+                "name": "input_docs",
+                "label": {
+                  "text": "Add a source document",
+                  "isPageHeading": false,
+                  "classes": "govuk-label--s"
+                },
+                "hint": {
+                  "text": "The file must be a MD or DOCX."
+                },
+                "errorMessage": {
+                  "text": errors["input_docs"]
+                } if "input_docs" in errors else None,
+                "attributes": {
+                  "accept": ".md,.docx"
+                }
+                }) }}
+              {{ govukButton(params={
+                "text": "Update",
+                "name": "action",
+                "value": "update",
+                "classes": "govuk-button--secondary"
+              }) }}
+          </li>
+          <li class="ontology__list-item">
+            {{ govukTextarea(params={
+                "name": "processing_prompt",
+                "id": "processing_prompt",
+                "required": true,
+                "rows": 5,
+                "value": run_model.prompt,
+                "label": {
+                  "text": "Processing Prompt",
+                  "isPageHeading": false,
+                  "classes": "govuk-label--m"
+                },
+                "errorMessage": {
+                  "text": errors["processing_prompt"]
+                } if "processing_prompt" in errors else None
+              }) }}
+          </li>
+          <li class="ontology__list-item">
+            <div class="govuk-button-group">
+              {{ govukButton(params={
+                "text": "Start",
+                "name": "action",
+                "value": "start"
+              }) }}
+            </div>
+        </li>
+      </ul>
     </form>
   </div>
 

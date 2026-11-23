@@ -2,3 +2,13 @@ $govuk-assets-path: "/static/govuk/assets/";
 @import "govuk-frontend/dist/govuk/index";
 
 h2 { font-family: sans-serif; }
+
+ul.ontology__list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li.ontology__list-item {
+  border-bottom: 1px solid gray;
+  margin-bottom: 10px;
+}
