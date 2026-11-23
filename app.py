@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 app.jinja_loader = ChoiceLoader(
     [
-        FileSystemLoader("templates"),
+        FileSystemLoader("src/templates"),
         PrefixLoader({"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}),
     ]
 )
