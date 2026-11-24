@@ -56,7 +56,69 @@ test('renders processing library, AI provider and model options', async ({ page 
   await expect(aiModel).toBeEnabled();
   await expect(aiModel.getByRole('option')).toHaveText(['Test model']);
   await expect(aiModel).toHaveValue('test-model');
-  await expect(page.getByRole('alert')).toBeHidden();
+  await expect(page.locator('#ai-model-update-error')).toBeHidden();
+  await expect(page.locator('#embedding-model-update-error')).toBeHidden();
+});
+
+test('loads embedding models on initial load and provider change', async ({ page }) => {
+  const provider = page.getByRole('combobox', { name: 'AI Provider', exact: true });
+  const embedding = page.getByRole('combobox', { name: 'Embedding model', exact: true });
+  await expect(embedding).toBeEnabled();
+  await expect(embedding.getByRole('option')).toHaveText(['text-embedding-3-small', 'text-embedding-3-large']);
+  await embedding.selectOption('text-embedding-3-large');
+  await provider.selectOption('Ollama');
+  await expect(embedding.getByRole('option')).toHaveText(['nomic-embed-text']);
+  await expect(embedding).toHaveValue('nomic-embed-text');
+  await provider.selectOption('OpenAI');
+  await expect(embedding).toHaveValue('text-embedding-3-small');
+});
+
+for (const savedModel of ['text-embedding-3-large', 'unavailable-model', '']) {
+  test(`selects the saved embedding model or defaults to the first option (${savedModel || 'empty'})`, async ({ page }) => {
+    const response = await page.request.post('/', {
+      form: { ai_provider: 'OpenAI', embedding_model: savedModel },
+    });
+    await page.route('http://127.0.0.1:5000/', route => route.fulfill({ response }));
+    await page.goto('/');
+    const embedding = page.getByRole('combobox', { name: 'Embedding model', exact: true });
+    await expect(embedding).toBeEnabled();
+    await expect(embedding).toHaveValue(savedModel === 'text-embedding-3-large' ? savedModel : 'text-embedding-3-small');
+  });
+}
+
+test('disables embedding models and reports a failed update', async ({ page }) => {
+  await page.route('**/update_embedding_models?*', route => route.fulfill({ status: 500 }));
+  await page.getByRole('combobox', { name: 'AI Provider', exact: true }).selectOption('Ollama');
+  await expect(page.locator('#embedding-model-update-error')).toHaveText('Could not update embedding models. Try again.');
+  await expect(page.getByRole('combobox', { name: 'Embedding model', exact: true })).toBeDisabled();
+});
+
+test('ignores a stale embedding model response after changing provider', async ({ page }) => {
+  let releaseOldRequest!: () => void;
+  const oldRequestReleased = new Promise<void>(resolve => { releaseOldRequest = resolve; });
+  let oldRequestStarted!: () => void;
+  const oldRequestSeen = new Promise<void>(resolve => { oldRequestStarted = resolve; });
+  await page.route('**/update_embedding_models?*', async route => {
+    if (new URL(route.request().url()).searchParams.get('ai_provider') === 'Ollama') {
+      oldRequestStarted();
+      await oldRequestReleased;
+      await route.fulfill({ json: ['old-model'] });
+    } else {
+      await route.fulfill({ json: ['current-model'] });
+    }
+  });
+  const provider = page.getByRole('combobox', { name: 'AI Provider', exact: true });
+  const embedding = page.getByRole('combobox', { name: 'Embedding model', exact: true });
+  await provider.selectOption('Ollama');
+  await oldRequestSeen;
+  await expect(embedding).toBeDisabled();
+  await provider.selectOption('OpenAI');
+  await expect(embedding).toHaveValue('current-model');
+  const oldResponse = page.waitForResponse(response => response.url().includes('ai_provider=Ollama') &&
+    response.url().includes('/update_embedding_models'));
+  releaseOldRequest();
+  await oldResponse;
+  await expect(embedding.getByRole('option')).toHaveText(['current-model']);
 });
 
 test('renders the source document upload and guidance', async ({ page }) => {

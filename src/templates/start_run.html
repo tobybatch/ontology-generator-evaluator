@@ -3,11 +3,25 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-xl">Running {{ run_model.name }}</h1>
-
-    <p class="govuk-body-l">
-      Use this service to test Ontology generation using a variety of AI models and processing libraries.
-    </p>
+    <h1 class="govuk-heading-xl">Run {{ run_model.name }}</h1>
+    {% if job %}
+      <p class="govuk-body">Status: {{ job.state }} — {{ job.stage }}</p>
+      {% if job.state == "failed" %}
+        <p class="govuk-error-message" role="alert">{{ job.error }}</p>
+      {% elif job.state == "completed" and current %}
+        <ul class="govuk-list">
+          <li><a class="govuk-link" href="{{ url_for('run.download', run_id=run_model.id, filename='ontology.ttl') }}">Download Turtle ontology</a></li>
+          <li><a class="govuk-link" href="{{ url_for('run.download', run_id=run_model.id, filename='graph.json') }}">Download graph JSON</a></li>
+        </ul>
+      {% elif job.state == "completed" %}
+        <p class="govuk-body">The run or its input has changed. Start the run again to create current results.</p>
+      {% else %}
+        <p class="govuk-body">Refresh this page to see progress.</p>
+      {% endif %}
+    {% else %}
+      <p class="govuk-body">No job has been started for this run.</p>
+    {% endif %}
+    <p class="govuk-body"><a class="govuk-link" href="{{ url_for('run.index', run=run_model.id) }}">Return to run</a></p>
 
   </div>
 </div>

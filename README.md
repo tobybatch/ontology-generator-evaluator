@@ -69,9 +69,51 @@ Run it with
 uv run flask run --debug
 ```
 
-On the dashboard, **Update** saves the form using the existing dashboard handler.
-**Start** calls the new `start_run` placeholder, which also saves the form and
-displays a message that run execution is not implemented yet.
+On the dashboard, **Update** saves the form. **Start** reads the saved run's
+UTF-8 text input sources, saves the current form and queues an ontology job.
+PDF, DOCX and other binary document formats are not supported.
+
+Start a worker in another terminal before submitting a run:
+
+```bash
+uv run python -m ontology_generator_evaluator.services.worker
+```
+
+The worker claims jobs from `storage/jobs.sqlite3`; it can be stopped and
+restarted. A worker heartbeat permits abandoned jobs to be reclaimed after the
+lease expires. A failed job displays its error; start the run again to retry.
+For a single queued job, use `--once`. The run page shows progress when
+refreshed and offers downloads only for the latest completed job whose inputs
+and configuration have not changed.
+
+Select an Ollama or OpenAI generation model and enter a separate embedding model
+available from that provider (for example, `nomic-embed-text` for Ollama or
+`text-embedding-3-small` for OpenAI). Pull the Ollama embedding model locally
+before use. OpenAI requires `OPENAI_API_KEY`; Ollama must be running locally.
+Enter an HTTP(S) base IRI ending in `/` or `#`; the default
+`https://example.org/ontology/` is a placeholder and should be replaced for
+published ontologies.
+
+Every chunk is embedded and used as an anchor for generation, with up to two
+similar chunks as additional context. The model is asked to use consistent
+IRIs across fragments; RDF triples with identical terms are merged, but semantic
+duplicates with different IRIs are not automatically reconciled. Model output
+is parsed as Turtle; invalid or empty fragments fail the job rather than
+producing a partial ontology. Generated ontologies should be reviewed by a
+domain expert.
+
+Each completed job stores its chunks, vectors, `ontology.ttl` and `graph.json`
+under `storage/job_results/<job id>/<attempt id>/`. The SQLite job snapshot
+contains the source text and run configuration. Data sent to OpenAI leaves the
+local machine and may incur provider charges; Ollama processes it locally.
+Storage and remote provider access should be protected appropriately.
+
+`graph.json` version 1 represents the same RDF graph as the Turtle file:
+`nodes` contain resource identifiers and literal `attributes` (each with a
+predicate and value); `edges` contain resource-to-resource triples with
+`source`, `predicate` and `target`. Each term has a `type` (`iri`, `blank` or
+`literal`) and `value`; literals also include `datatype` or `language` when
+present. Blank node identifiers are canonicalized for stable output.
 
 Run tests with 
 

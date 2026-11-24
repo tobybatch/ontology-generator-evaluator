@@ -4,10 +4,15 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 ENV_FILE = Path(__file__).resolve().parent / ".env"
-STORAGE_PATH = 'storage'
-RUN_MODEL_STORAGE_PATH = os.path.join(STORAGE_PATH, 'run_model')
-DEFAULT_PROMPT = 'As an expert on content schema and meta data, can you extract the content schema and meta data from the document and return it in TTL format?'
-AWS_REGION = 'eu-east-2'
+STORAGE_PATH = "storage"
+RUN_MODEL_STORAGE_PATH = os.path.join(STORAGE_PATH, "run_model")
+RUN_STATUS_MODEL_STORAGE_PATH = os.path.join(STORAGE_PATH, "run_status_model")
+DEFAULT_PROMPT = (
+    "As an expert on content schema and meta data, can you extract the content schema and meta data from "
+    "the document and return it in TTL format?"
+)
+DEFAULT_ONTOLOGY_BASE_IRI = "https://example.org/ontology/"
+AWS_REGION = "eu-east-2"
 
 
 def load_config() -> None:
@@ -20,3 +25,7 @@ def get_storage_path() -> Path:
 
 def get_run_model_storage_path() -> Path:
     return Path(RUN_MODEL_STORAGE_PATH)
+
+
+def get_run_status_model_storage_path() -> Path:
+    return Path(RUN_STATUS_MODEL_STORAGE_PATH)

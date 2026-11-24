@@ -23,6 +23,9 @@
       {% if start_message %}
         {{ govukInsetText(params={"text": start_message}) }}
       {% endif %}
+      {% if errors.get("run") %}
+        <p class="govuk-error-message" role="alert">{{ errors["run"] }}</p>
+      {% endif %}
 
       <p class="govuk-body">
         {{ govukWarningText(params={
@@ -59,7 +62,7 @@
                 "text": "Processing library",
                 "classes": "govuk-label--m"
               },
-              "value": run_model.library,
+              "value": run_model.processing_library,
               "items": lib_providers,
               "errorMessage": {
                 "text": errors["processing_library"]
@@ -71,7 +74,8 @@
               "id": "ai_provider",
               "name": "ai_provider",
               "attributes": {
-                "data-models-url": url_for('run.update_ai_models')
+                "data-models-url": url_for('run.update_ai_models'),
+                "data-embedding-models-url": url_for('run.update_embedding_models')
               },
               "label": {
                 "text": "AI Provider",
@@ -103,6 +107,29 @@
             }) }}
 
             <p id="ai-model-update-error" class="govuk-error-message" role="alert" hidden></p>
+
+            {{ govukSelect(params={
+              "id": "embedding_model",
+              "name": "embedding_model",
+              "attributes": {
+                "disabled": true,
+                "data-selected-model": run_model.embedding_model
+              },
+              "label": {"text": "Embedding model", "classes": "govuk-label--m"},
+              "items": [],
+              "errorMessage": {
+                "text": errors["embedding_model"]
+              } if "embedding_model" in errors else None
+            }) }}
+            <p id="embedding-model-update-error" class="govuk-error-message" role="alert" hidden></p>
+            {{ govukInput(params={
+              "id": "base_iri",
+              "name": "base_iri",
+              "label": {"text": "Ontology base IRI", "classes": "govuk-label--m"},
+              "hint": {"text": "Use an HTTP(S) IRI ending in / or #."},
+              "value": run_model.base_iri,
+              "required": true
+            }) }}
           </li>
           <li class="ontology__list-item">
               <h2 class="govuk-label--m">Data sources</h2>
@@ -131,13 +158,13 @@
                   "classes": "govuk-label--s"
                 },
                 "hint": {
-                  "text": "The file must be a MD or DOCX."
+                  "text": "The file must contain UTF-8 text, such as a .txt or .md file."
                 },
                 "errorMessage": {
                   "text": errors["input_docs"]
                 } if "input_docs" in errors else None,
                 "attributes": {
-                  "accept": ".md,.docx"
+                  "accept": ".txt,.md"
                 }
                 }) }}
               {{ govukButton(params={

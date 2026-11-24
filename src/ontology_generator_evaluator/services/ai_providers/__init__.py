@@ -5,3 +5,8 @@ AI_PROVIDERS = {
     "OpenAI": OpenAIProvider(),
     "Ollama": OllamaProvider(),
 }
+
+EMBEDDING_MODELS = {
+    "OpenAI": ["text-embedding-3-small", "text-embedding-3-large"],
+    "Ollama": ["nomic-embed-text"],
+}
